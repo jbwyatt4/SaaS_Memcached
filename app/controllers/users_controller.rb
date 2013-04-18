@@ -71,24 +71,46 @@ class UsersController < ApplicationController
       #@user.memcached = i["NetworkSettings"]["PortMapping"]["11211"]
       #@user.container_id = container_id
       #@user.docker_ip = i["NetworkSettings"]["IpAddress"]
-      redirect_to me_path, notice: "Server #{container_id} has now been started!"
+      #redirect_to me_path, notice: "Server #{container_id} has now been started!"
     else
       #report error
-      redirect_to me_path, notice: "Error!"
+      #redirect_to me_path, notice: "Error!"
     end
   end
   
-  def destroy_docker_instance(id)
+  # start and create are seperate b/c docker create creates and starts an app
+  def start_docker_instance(id)
+    instance = Instance.find_by_container_id(id)
+
+    return_result = `@@docker_path start #{id}`
+  end
+
+  def stop_docker_instance(id)
     # search for id, delete id if found, otherwise silently continue
     instance = Instance.find_by_container_id(id)
 
     # commands to shut it down
-    return_result = `@@docker_path stop #{id} && @@docker_path rm #{id}`
-    redirect_to me_path, notice: "Server #{id} has been destroyed!"
+    return_result = `@@docker_path stop #{id}`
+    #redirect_to me_path, notice: "Server #{id} has been stopped!"
+  end
+
+  def destroy_docker_instance(id)
+    stop_docker_instance(id)
+    # search for id, delete id if found, otherwise silently continue
+    instance = Instance.find_by_container_id(id)
+
+    # commands to shut it down
+    return_result = `@@docker_path rm #{id}`
+    #redirect_to me_path, notice: "Server #{id} has been destroyed!"
   end
 
   def list_all_instances
     # user version
+    # -q=false option only displays numerical IDs
+    list = `@@docker_path ps -q=false`
+
+    #then go through each of these... well we just have to post
+    return list
   end
 
   $VALIDATE_IP_REGEX = /^([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])$/  
