@@ -4,6 +4,8 @@ require 'digest/md5'
 
 class UsersController < ApplicationController
   before_filter :signed_in_user, only: [:show]
+  @@docker_path = '/home/vagrant/docker-master/'
+  @@docker_name = "jwyatt/sales_app"
 
   def index
     redirect_to root_path
@@ -56,8 +58,9 @@ class UsersController < ApplicationController
     instance.instance_type = type
     instance.user = current_user.email
     if instance.save!
-      docker_path = '/home/vagrant/docker-master/'
-      docker_name = "jwyatt/sales_app" #where type comes into place, in the future have a model function pick this variable
+      docker_path = @@docker_path
+      docker_name = @@docker_name
+       #where type comes into place, in the future have a model function pick this variable
       command_list = 'cd sales_saas && rails s -p #{port}'
       container_id = `#{docker_path}docker run -d -p 11211 #{docker_name} #{command_list} -u daemon`
       cmd = "#{docker_path}docker inspect #{container_id}"
@@ -68,7 +71,7 @@ class UsersController < ApplicationController
       #@user.memcached = i["NetworkSettings"]["PortMapping"]["11211"]
       #@user.container_id = container_id
       #@user.docker_ip = i["NetworkSettings"]["IpAddress"]
-      redirect_to me_path, notice: "Server has now been started!"
+      redirect_to me_path, notice: "Server #{container_id} has now been started!"
     else
       #report error
       redirect_to me_path, notice: "Error!"
@@ -78,7 +81,10 @@ class UsersController < ApplicationController
   def destroy_docker_instance(id)
     # search for id, delete id if found, otherwise silently continue
     instance = Instance.find_by_container_id(id)
+
     # commands to shut it down
+    return_result = `@@docker_path stop #{id} && @@docker_path rm #{id}`
+    redirect_to me_path, notice: "Server #{id} has been destroyed!"
   end
 
   def list_all_instances
