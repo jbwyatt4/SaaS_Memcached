@@ -67,12 +67,11 @@ class UsersController < ApplicationController
       #@user.memcached = i["NetworkSettings"]["PortMapping"]["11211"]
       #@user.container_id = container_id
       #@user.docker_ip = i["NetworkSettings"]["IpAddress"]
-      flash[:success] = "Welcome!"
+      redirect_to me_path, notice: "Server is now created!"
     else
       #report error
-      flash[:error] = "Bad!"
+            redirect_to me_path, notice: "Error!"
     end
-    redirect_to me_path
   end
   
   def destroy_docker_instance(id)
