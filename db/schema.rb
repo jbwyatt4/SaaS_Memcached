@@ -11,17 +11,30 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130412175743) do
+ActiveRecord::Schema.define(:version => 20130418111820) do
+
+  create_table "instances", :force => true do |t|
+    t.integer  "container_id"
+    t.string   "ip"
+    t.string   "assigned_port"
+    t.integer  "instance_type"
+    t.string   "unique_hash"
+    t.datetime "created_at",    :null => false
+    t.datetime "updated_at",    :null => false
+    t.string   "user"
+  end
+
+  add_index "instances", ["assigned_port"], :name => "index_instances_on_assigned_port"
+  add_index "instances", ["container_id"], :name => "index_instances_on_container_id"
+  add_index "instances", ["ip"], :name => "index_instances_on_ip"
+  add_index "instances", ["unique_hash"], :name => "index_instances_on_unique_hash"
+  add_index "instances", ["user"], :name => "index_instances_on_user"
 
   create_table "users", :force => true do |t|
     t.string   "email"
     t.datetime "created_at",      :null => false
     t.datetime "updated_at",      :null => false
     t.string   "password_digest"
-    t.string   "memcached"
-    t.string   "docker_ip"
-    t.string   "secure_ip"
-    t.string   "container_id"
   end
 
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true

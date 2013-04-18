@@ -16,7 +16,7 @@ dc = Dalli::Client.new("#{ip}:#{port}")
 dc.set('<%= @md5 %>','<%= @user.email %>')
 value = dc.get('<%= @md5 %>')
 
-puts "Welcome #{value}! Your Memcached server is ready to use :)"</pre>
+puts "Welcome #{value}! Your sales server is ready to use :)"</pre>
     </li>
     <li class="span6 float-up">
       <h2>

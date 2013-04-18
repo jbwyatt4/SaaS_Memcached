@@ -3,32 +3,7 @@ require 'json'
 require 'digest/md5'
 
 class UsersController < ApplicationController
-  before_filter :signed_in_user, only: [:show, :ip]
-
-  def ip
-    @user = User.find(session[:user_id])
-    if params[:ip].blank?
-      if !@user.secure_ip.nil?
-        iptables_remove_ip @user.secure_ip
-        @user.secure_ip = nil;
-        @user.save!(validate: false)
-        flash[:success] = "Your Memcached server is now accessible by anyone."
-      end
-    else
-      if !check_ip(params[:ip])
-        flash[:error] = "Wrong IP format"
-      else
-        if !@user.secure_ip.nil?
-          iptables_remove_ip(@user.secure_ip)
-        end
-        iptables_add_ip(params[:ip])
-        @user.secure_ip = params[:ip]
-        @user.save(validate: false)
-        flash[:success] = "Your Memcached server will now work only with requests from IP #{@user.secure_ip}."
-      end
-    end
-    redirect_to me_path
-  end
+  before_filter :signed_in_user, only: [:show]
 
   def index
     redirect_to root_path
@@ -83,6 +58,10 @@ class UsersController < ApplicationController
   
   def destroy_docker_instance(id)
     # search for id, delete id if found, otherwise silently continue
+  end
+
+  def list_all_instances
+    # admin only function
   end
 
   $VALIDATE_IP_REGEX = /^([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])$/  

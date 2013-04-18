@@ -4,9 +4,9 @@
   <%= @user.email %>
 </h1>
 <div class="alert alert-info">
-  Congratulations <%= @user.email %>. Your Memcached server is ready to use.
+  Congratulations <%= @user.email %>. Your <%=@saas_name%> server is ready to use.
 </div>
-<h1>Your Memcached Server is ready!</h1>
+<h1>Your <%=@saas_name%> Server is ready!</h1>
 <div class="block-info">
   <h3>IP: <%= my_public_ip %></h3>
   <h3>PORT: <%= @user.memcached %></h3>
