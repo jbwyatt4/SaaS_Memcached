@@ -3,17 +3,12 @@
   <%= gravatar_for @user %>
   <%= @user.email %>
 </h1>
+<h1><%=@saas_name%> Control Panel</h1>
 <div class="alert alert-info">
-  Congratulations <%= @user.email %>. Your <%=@saas_name%> server is ready to use.
+  Please choose an option below. Use Start New Server to start a server.
 </div>
-<h1>Your <%=@saas_name%> Server is ready!</h1>
 <div class="block-info">
-  <h3>IP: <%= my_public_ip %></h3>
-  <h3>PORT: <%= @user.memcached %></h3>
-</div>
-<div class="alert alert-info">
-  Use it with your favorite language.
+  <h3>Some field</h3>
+  <h3>Some field</h3>
 </div>
 
-<%= render 'code' %>
-<%= render 'ip' %>
