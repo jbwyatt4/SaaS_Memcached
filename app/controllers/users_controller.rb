@@ -46,7 +46,7 @@ class UsersController < ApplicationController
   def create
     @user = User.new(params[:user])
     @user.secure_ip = nil;
-    create_memcached_instance
+    create_docker_instance
     if @user.save
       sign_in @user
       flash[:success] = "Welcome!"
@@ -65,17 +65,26 @@ class UsersController < ApplicationController
     end
   end
 
-  def create_memcached_instance
-    docker_path = '/home/julien/docker-master/'
-    container_id = `#{docker_path}docker run -d -p 11211 jbarbier/memcached memcached -u daemon`
+  # You must define the docker_path
+  # the target app must be in the docker folder
+  def create_docker_instance
+    docker_path = '/home/vagrant/docker-master/'
+    docker_name = "jwyatt/sales_app"
+    instance_port = "4000"
+    command_list = 'cd sales_saas && rails s -p #{instance_port}'
+    container_id = `#{docker_path}docker run -d -p 11211 #{docker_name} #{command_list} -u daemon`
     cmd = "#{docker_path}docker inspect #{container_id}"
     json_infos = `#{cmd}`
     i = JSON.parse(json_infos)
-    @user.memcached = i["NetworkSettings"]["PortMapping"]["11211"]
-    @user.container_id = container_id
-    @user.docker_ip = i["NetworkSettings"]["IpAddress"]
+    #@user.memcached = i["NetworkSettings"]["PortMapping"]["11211"]
+    #@user.container_id = container_id
+    #@user.docker_ip = i["NetworkSettings"]["IpAddress"]
   end
   
+  def destroy_docker_instance(id)
+    # search for id, delete id if found, otherwise silently continue
+  end
+
   $VALIDATE_IP_REGEX = /^([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])\.([01]?\d\d?|2[0-4]\d|25[0-5])$/  
   def check_ip(i)
     if ($VALIDATE_IP_REGEX.match(i))
