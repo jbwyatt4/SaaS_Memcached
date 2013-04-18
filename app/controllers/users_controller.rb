@@ -58,24 +58,27 @@ class UsersController < ApplicationController
     if instance.save!
       docker_path = '/home/vagrant/docker-master/'
       docker_name = "jwyatt/sales_app" #where type comes into place, in the future have a model function pick this variable
-      instance_port = "4000"
-      command_list = 'cd sales_saas && rails s -p #{instance_port}'
+      command_list = 'cd sales_saas && rails s -p #{port}'
       container_id = `#{docker_path}docker run -d -p 11211 #{docker_name} #{command_list} -u daemon`
       cmd = "#{docker_path}docker inspect #{container_id}"
       json_infos = `#{cmd}`
       i = JSON.parse(json_infos)
+      instance.container_id = container_id
+      instance.save!
       #@user.memcached = i["NetworkSettings"]["PortMapping"]["11211"]
       #@user.container_id = container_id
       #@user.docker_ip = i["NetworkSettings"]["IpAddress"]
-      redirect_to me_path, notice: "Server is now created!"
+      redirect_to me_path, notice: "Server has now been started!"
     else
       #report error
-            redirect_to me_path, notice: "Error!"
+      redirect_to me_path, notice: "Error!"
     end
   end
   
   def destroy_docker_instance(id)
     # search for id, delete id if found, otherwise silently continue
+    instance = Instance.find_by_container_id(id)
+    # commands to shut it down
   end
 
   def list_all_instances
