@@ -4,5 +4,5 @@ class Instance < ActiveRecord::Base
       :ip, :unique_hash, :user
   validates :assigned_port, presence: true, uniqueness: true
   validates :instance_type, presence: true
-  validates :user, presence: true
+  #validates :user, presence: true
 end

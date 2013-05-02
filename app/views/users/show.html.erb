@@ -23,10 +23,11 @@
 
   <% @instance.each do |inst| %>
     <tr>
-      <td><%= inst.container_id %></td>
-      <td><%= inst.instance_type %></td>
-      <td><%= inst.assigned_port %></td>
-      <td><%= link_to 'Destroy', controller: :users, method: :delete_instance, data: { confirm: 'Are you sure?' } %></td>
+      <td><%= inst.container_id %> | </td>
+      <td><%= inst.instance_type %> | </td>
+      <td><%= inst.assigned_port %> </td>
+      <td><%= link_to 'Destroy', delete_instance_path(:container_id => inst.container_id) %></td>
+
     </tr>
   <% end %>
   </table>

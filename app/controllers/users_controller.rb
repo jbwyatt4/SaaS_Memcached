@@ -19,13 +19,22 @@ class UsersController < ApplicationController
     @user = current_user
 
     #create_docker_instance(type, port)
-    type = 0
-    port = 0
+
+    type = params[:type]
+    port = params[:port]
     create_instance type, port
   end
 
   def delete_instance
     @user = current_user
+    @instance = Instance.find_by_container_id(params[:container_id])
+
+    if @instance.destroy
+      flash[:success] = "Instance Deleted!"
+    else
+      flash[:error] = "Instance not deleted!"
+    end
+    redirect_to me_path
   end
 
   def show
@@ -60,21 +69,17 @@ class UsersController < ApplicationController
     instance.instance_type = type
     instance.user = current_user
     if instance.save!
-      instance.container_id = SecureRandom.urlsafe_base64
+      instance.container_id = SecureRandom.random_number(100000)
       instance.save!
       flash[:success] = "Instance Created!"
       redirect_to me_path
     end
   end
 
-  def delete_instance(id)
-    instance = Instance.find_by_container_id(id)
-  end
-
   # You must define the docker_path
   # the target app must be in the docker folder
   def create_docker_instance(type, port)
-    instance = new Instance.new
+    instance = Instance.new
     instance.assigned_port = port
     instance.instance_type = type
     instance.user = current_user.email
