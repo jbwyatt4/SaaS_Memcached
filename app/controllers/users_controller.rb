@@ -18,7 +18,10 @@ class UsersController < ApplicationController
   def new_instance
     @user = current_user
 
-    create_docker_instance(type, port)
+    #create_docker_instance(type, port)
+    type = 0
+    port = 0
+    create_instance type, port
   end
 
   def delete_instance
@@ -26,6 +29,7 @@ class UsersController < ApplicationController
   end
 
   def show
+    @instance = Instance.all
     @user = current_user
     @md5 = digest = Digest::MD5.hexdigest(@user.email)[0...11]
   end
@@ -48,6 +52,15 @@ class UsersController < ApplicationController
       store_location
       redirect_to signin_url, notice: "Please sign in."
     end
+  end
+
+  def create_instance(type, port)
+      flash[:success] = "Created Instance"
+      redirect_to me_path
+  end
+
+  def delete_instance(id)
+
   end
 
   # You must define the docker_path

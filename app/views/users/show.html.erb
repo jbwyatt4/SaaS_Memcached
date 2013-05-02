@@ -3,12 +3,36 @@
   <%= gravatar_for @user %>
   <%= @user.email %>
 </h1>
-<h1><%=@saas_name%> Control Panel</h1>
+
+<h1> Sales App Control Panel</h1>
 <div class="alert alert-info">
-  Please choose an option below. Use Start New Server to start a server.
+  Please choose an option below. Use Create New Server to create a server.
 </div>
+
 <div class="block-info">
-  <h3>Some field</h3>
-  <h3>Some field</h3>
+  <h3>All Your Instances</h3>
+  <table>
+    <tr>
+      <th>ID   |</th>
+      <th>Type |</th>
+      <th>Port |</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+
+  <% @instance.each do |inst| %>
+    <tr>
+      <td><%= inst.container_id %></td>
+      <td><%= inst.type %></td>
+      <td><%= inst.port %></td>
+      <td><%= link_to 'Destroy', users, method: :delete_instance, data: { confirm: 'Are you sure?' } %></td>
+    </tr>
+  <% end %>
+  </table>
+  
+  <br />
+  <h3>New Server</h3>
+  <%= render 'form' %>
 </div>
 
