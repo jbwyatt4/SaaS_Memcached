@@ -55,12 +55,20 @@ class UsersController < ApplicationController
   end
 
   def create_instance(type, port)
-      flash[:success] = "Created Instance"
+    instance = Instance.new
+    instance.assigned_port = port
+    instance.instance_type = type
+    instance.user = current_user
+    if instance.save!
+      instance.container_id = SecureRandom.urlsafe_base64
+      instance.save!
+      flash[:success] = "Instance Created!"
       redirect_to me_path
+    end
   end
 
   def delete_instance(id)
-
+    instance = Instance.find_by_container_id(id)
   end
 
   # You must define the docker_path
