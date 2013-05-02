@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130502064659) do
+ActiveRecord::Schema.define(:version => 20130502080957) do
 
   create_table "instances", :force => true do |t|
     t.integer  "container_id"
@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(:version => 20130502064659) do
     t.datetime "updated_at",    :null => false
     t.string   "instance"
     t.integer  "user"
+    t.string   "email"
   end
 
   add_index "instances", ["assigned_port"], :name => "index_instances_on_assigned_port"

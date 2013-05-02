@@ -38,8 +38,8 @@ class UsersController < ApplicationController
   end
 
   def show
-    @instance = Instance.all
     @user = current_user
+    @instance = Instance.find_all_by_email(@user.email)
     @md5 = digest = Digest::MD5.hexdigest(@user.email)[0...11]
   end
 
@@ -67,7 +67,7 @@ class UsersController < ApplicationController
     instance = Instance.new
     instance.assigned_port = port
     instance.instance_type = type
-    instance.user = current_user
+    instance.email = current_user.email
     if instance.save!
       instance.container_id = SecureRandom.random_number(100000)
       instance.save!
